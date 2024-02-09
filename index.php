@@ -17,86 +17,173 @@
         th {
             background-color: #f2f2f2;
         }
+        #redirectButton {
+                padding: 10px 20px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+        #redirectButton:hover {
+            background-color: #45a049;
+        }
+        button {
+        padding: 8px 16px; /* Adjust padding as needed */
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    /* Hover effect */
+    button:hover {
+        background-color: #45a049; /* Darker green */
+    }
+
+    /* Pressed effect */
+    button:active {
+        background-color: #3e8e41; /* Even darker green */
+    }
 </style>
 </head>
 <body>
 
-
-
+    <h1>User Details</h1>
 
     <table>
     <?php
-           
-            $servername = "localhost";
-            $username = "root";
-            $password = "";
-            $dbName = "user";
 
-
-            $con = new mysqli($servername, $username, $password, $dbName);
-
-            // checking connection
-            if($con->connect_error){
-                echo "Database not connect".$con->connect_error;
-            }else{
-                echo "Database connected successfully"."<br>";
+            if(isset($_POST["gender"])) {
+                $genderValue = $_POST["gender"];
+                // echo $radioVal;
+            } else {
+                echo "Please select a gender.";
             }
+            // checking request is POST
+            if($_SERVER["REQUEST_METHOD"] == "POST"){
+                if( empty($_POST['firstName']) && 
+                    empty($_POST["lastName"]) && 
+                    empty($_POST["email"]) && 
+                    empty($genderValue) && 
+                    empty($_POST["phoneNumber"]) && 
+                    empty($_POST["companyName"]) && 
+                    empty($_POST["address"]))
+                    {
+                        header("Location: ./main.html");
+                }else{
+                    // Getting user data
+                        $firstName = $_POST['firstName'];
+                        // echo $firstName."<br>" ;
+                        $lastName = $_POST["lastName"];
+                        // echo $lastName."<br>";
+                        $email = $_POST["email"];
+                        // echo $email."<br>";
+                        $phoneNumber = $_POST["phoneNumber"];
+                        // echo $phoneNumber."<br>";
+                        $companyName = $_POST["companyName"];
+                        // echo $companyName."<br>";
+                        $address = $_POST["address"];
+                        // echo $address."<br>";
 
-            $firstName = $_POST['firstName'];
-            // echo $firstName."<br>" ;
-            $lastName = $_POST["lastName"];
-            // echo $lastName."<br>";
-            $email = $_POST["email"];
-            // echo $email."<br>";
-            $phoneNumber = $_POST["phoneNumber"];
-            // echo $phoneNumber."<br>";
-            $companyName = $_POST["companyName"];
-            // echo $companyName."<br>";
-            $address = $_POST["address"];
-            // echo $address."<br>";
+                        if(isset($_POST["gender"])) {
+                            $genderValue = $_POST["gender"];
+                            // echo $radioVal;
+                        } else {
+                            echo "Please select a gender.";
+                        }
+                                    // checking connection
 
-            $sql = "INSERT INTO userDetail(firstname, lastname, email,phone_number, company, addres)
-            VALUES ('$firstName', '$lastName', '$email','$phoneNumber', '$companyName', '$address')
-            ";
-
-            $insert = $con->query($sql);
-
-
-
+                        $servername = "localhost";
+                        $username = "root";
+                        $password = "";
+                        $dbName = "user";
+           
+                        $con = new mysqli($servername, $username, $password, $dbName);
+                        // insert data to the database
+                        $sql = "INSERT INTO userDetail(firstname, lastname, gender, email,phone_number, company, addres)
+                        VALUES ('$firstName', '$lastName', '$genderValue', '$email','$phoneNumber', '$companyName', '$address')
+                        ";
+                         if($con->connect_error){
+                            echo "Database not connect".$con->connect_error;
+                        }else{
+                            echo "Database connected successfully"."<br>";
+                        }
             
 
-            $fetch = "SELECT * FROM userDetail";
-            $result = $con->query($fetch);
+                        $insert = $con->query($sql);
 
-            if ($result->num_rows > 0) {
-                echo "<table>";
-                echo "<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Company</th><th>Address</th></tr>";
-                while($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td>" . $row["id"] . "</td>";
-                    echo "<td>" . $row["firstname"] . "</td>";
-                    echo "<td>" . $row["lastname"] . "</td>";
-                    echo "<td>" . $row["email"] . "</td>";
-                    echo "<td>" . $row["company"] . "</td>";
-                    echo "<td>" . $row["addres"] . "</td>"; // Note: Typo in the database schema, should be "address" instead of "addres"
-                    echo "</tr>";
+
+                        // adding gender column to the database
+                        // $sql = "ALTER TABLE userDetail
+                        //     ADD COLUMN gender VARCHAR(20) NOT NULL AFTER lastname;
+                        // ";
+
+                        // if($con->query($sql) === TRUE){
+                        //     echo "Column added";
+                        // }else{
+                        //     "something went wrong";
+                        // }
+                        
+
+                        $fetch = "SELECT * FROM userDetail";
+                        $result = $con->query($fetch);
+
+                        if ($result->num_rows > 0) {
+                            // echo "<table>";
+                            echo "<tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th>Gender</th>
+                                    <th>Company</th>
+                                    <th>Address</th>
+                                    <th>Actions</th>
+                                    </tr>";
+                            while($row = $result->fetch_assoc()) {
+                                echo
+                                    "<tr>
+                                        <td>".$row['id']."</td>
+                                        <td>". $row["firstname"] ."</td>
+                                        <td>". $row["lastname"] ."</td>
+                                        <td>". $row["email"] ."</td>
+                                        <td>". $row["phone_number"] ."</td>
+                                        <td>". $row["gender"] ."</td>
+                                        <td>". $row["company"] ."</td>
+                                        <td>". $row["addres"] ."</td>
+                                        <td>
+                                            <button id='update' onclick='updateRow(".$row['id'].")' >Update</button>
+                                            <button id='delete' onclick='deleteRow(".$row['id'].")'>Delete</button>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                ";
+                            }
+                            // echo "</table>";
+                        } else {
+                            echo "No records found.";
+                        }
+                        $con->close();
                 }
-                echo "</table>";
-            } else {
-                echo "No records found.";
             }
-
-            $con->close();
             ?>
+                <button id="redirectButton">Add More User</button>
+                <script>
+                document.getElementById("redirectButton").addEventListener("click", function() {
+                    
+                    window.location.href = "main.html";
+                });
+                </script>
     </table>
-
-
-
-
-
-
-   
-
 </body>
 </html>
         
