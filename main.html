@@ -7,7 +7,58 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hello</h1>
-    
+    <form action="index.php" method="post">
+        <h1>Register User</h1>
+        <!-- first name and last name -->
+        <div class="userName">
+            <div class="form-control">
+                <label for="firstName">First Name:</label>
+                <input type="text" name="firstName" placeholder="Enter first name">
+            </div>
+            <div class="form-control">
+                <label for="lastName">Last Name:</label>
+                <input type="text" name="lastName" placeholder="Enter last name">
+            </div>
+        </div>
+
+        <!-- form detail -->
+        <div class="userDetail">
+            <!-- Email -->
+            <div class="form-control">
+                <label for="email">Email:</label>
+                <input type="text" name="email" placeholder="Enter email">
+            </div>
+            <!-- phone Number -->
+            <div class="form-control">
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="text" name="phoneNumber" placeholder="Phone Number">
+            </div>
+            <!-- company name -->
+            <div class="form-control">
+                <label for="companyName">Company(if applicable)</label>
+                <input type="text" name="companyName" placeholder="Compnay">
+            </div>
+            <!-- physical address -->
+            <div class="form-control">
+                <label for="address">Physical Address</label>
+                <input type="text" name="address" placeholder="Physical Address">
+            </div>
+            <!-- gender -->
+            <!-- <div class="genderPreference">
+                <div class="male">
+                    <label for="male">Male</label>
+                    <input type="radio" id="male" name="male" value="male">
+                </div>
+                <div class="female">
+                    <label for="female">Female</label>
+                    <input type="radio" id="Female" name="female" value="female">
+                </div>
+            </div> -->
+        </div>
+        <!-- submit button -->
+        <div class="submitBtn">
+            <button type="submit" >Submit</button>
+        </div>
+    </form>
 </body>
 </html>
