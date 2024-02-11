@@ -52,6 +52,21 @@
     button:active {
         background-color: #3e8e41; /* Even darker green */
     }
+
+    .deleteBtn {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #ff4d4d; /* Red color, you can change it as needed */
+        color: #fff; /* White text color */
+        text-decoration: none; /* Remove underline */
+        border-radius: 4px; /* Rounded corners */
+        border: none; /* Remove border */
+        cursor: pointer; /* Show pointer cursor on hover */
+    }
+
+    .deleteBtn:hover {
+        background-color: #cc0000; /* Darker red color on hover */
+    }
 </style>
 </head>
 <body>
@@ -61,24 +76,38 @@
     <table>
     <?php
 
-            if(isset($_POST["gender"])) {
-                $genderValue = $_POST["gender"];
-                // echo $radioVal;
-            } else {
-                echo "Please select a gender.";
-            }
+        
+
+   
+
+            
+
             // checking request is POST
             if($_SERVER["REQUEST_METHOD"] == "POST"){
                 if( empty($_POST['firstName']) && 
                     empty($_POST["lastName"]) && 
-                    empty($_POST["email"]) && 
-                    empty($genderValue) && 
+                    empty($_POST["email"]) &&
                     empty($_POST["phoneNumber"]) && 
                     empty($_POST["companyName"]) && 
                     empty($_POST["address"]))
                     {
-                        header("Location: ./main.html");
+
+                        header("Location: index.html");
+
                 }else{
+
+                    // validating gender selection
+                    if(isset($_POST['submit'])) {
+
+
+                        if(!isset($_POST["gender"])){
+       
+                           header("Location: index.html");
+                           exit();
+                        }
+       
+                   } 
+
                     // Getting user data
                         $firstName = $_POST['firstName'];
                         // echo $firstName."<br>" ;
@@ -118,7 +147,7 @@
                         }
             
 
-                        $insert = $con->query($sql);
+                        $insert = $con->query($sql);    
 
 
                         // adding gender column to the database
@@ -161,8 +190,9 @@
                                         <td>". $row["company"] ."</td>
                                         <td>". $row["addres"] ."</td>
                                         <td>
-                                            <button id='update' onclick='updateRow(".$row['id'].")' >Update</button>
-                                            <button id='delete' onclick='deleteRow(".$row['id'].")'>Delete</button>
+                                            <form action='http://localhost/Form/delete.php' method='POST' >
+                                                <button type='submit' name='delete-id' value='".$row['id']."'>DELETE</button>
+                                            </form>
                                         </td>
                                         <td></td>
                                     </tr>
@@ -180,7 +210,7 @@
                 <script>
                 document.getElementById("redirectButton").addEventListener("click", function() {
                     
-                    window.location.href = "main.html";
+                    window.location.href = "index.html";
                 });
                 </script>
     </table>
