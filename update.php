@@ -107,6 +107,10 @@
                         <h1>Update User</h1>
                         <!-- first name and last name -->
                         <div class='userName'>
+                        <div class='form-control'>
+                            <label for='userID'>User ID:</label>
+                            <input type='text' name='userID' value='".$row['id']."' >
+                        </div>
                             <div class='form-control'>
                                 <label for='firstName'>First Name:</label>
                                 <input type='text' name='firstName' placeholder='Enter first name' value='".$row['firstname']."' >
@@ -158,7 +162,7 @@
                         </div>
                         <!-- submit button -->
                         <div class='submitBtn'>
-                            <input type='submit' name='submit' value='update'>
+                            <input type='submit' name='update' value='update'>
                         </div>
                     </form>
                     ";

@@ -74,142 +74,268 @@
     <h1>User Details</h1>
 
     <table>
-    <?php
+            <?php
+                    if(isset($_POST['submit'])){
 
-        
-
-   
-
+                        if($_SERVER["REQUEST_METHOD"] == "POST"){
+                            if( empty($_POST['firstName']) && 
+                                empty($_POST["lastName"]) && 
+                                empty($_POST["email"]) &&
+                                empty($_POST["phoneNumber"]) && 
+                                empty($_POST["companyName"]) && 
+                                empty($_POST["address"]))
+                                {
             
-
-            // checking request is POST
-            if($_SERVER["REQUEST_METHOD"] == "POST"){
-                if( empty($_POST['firstName']) && 
-                    empty($_POST["lastName"]) && 
-                    empty($_POST["email"]) &&
-                    empty($_POST["phoneNumber"]) && 
-                    empty($_POST["companyName"]) && 
-                    empty($_POST["address"]))
-                    {
-
-                        header("Location: index.html");
-
-                }else{
-
-                    // validating gender selection
-                    if(isset($_POST['submit'])) {
-
-
-                        if(!isset($_POST["gender"])){
-       
-                           header("Location: index.html");
-                           exit();
-                        }else{
-                            $genderValue = $_POST["gender"];
-                        }
-       
-                   } 
-
-                    // Getting user data
-                        $firstName = $_POST['firstName'];
-                        // echo $firstName."<br>" ;
-                        $lastName = $_POST["lastName"];
-                        // echo $lastName."<br>";
-                        $email = $_POST["email"];
-                        // echo $email."<br>";
-                        $phoneNumber = $_POST["phoneNumber"];
-                        // echo $phoneNumber."<br>";
-                        $companyName = $_POST["companyName"];
-                        // echo $companyName."<br>";
-                        $address = $_POST["address"];
-                        // echo $address."<br>";
-
-                        if(isset($_POST["gender"])) {
+                                    header("Location: index.html");
+            
+                            }else{
+            
+                                // validating gender selection
+                                if(isset($_POST['submit'])) {
+            
+            
+                                    if(!isset($_POST["gender"])){
+                   
+                                       header("Location: index.html");
+                                       exit();
+                                       
+                                    }else{
+            
+                                            // Getting user data
+            
+                                            $genderValue = $_POST["gender"];
+                                        
+                                            $firstName = $_POST['firstName'];
+                                            
+                                            $lastName = $_POST["lastName"];
+                                            
+                                            $email = $_POST["email"];
+                                            
+                                            $phoneNumber = $_POST["phoneNumber"];
+                                            
+                                            $companyName = $_POST["companyName"];
+                                            
+                                            $address = $_POST["address"];
+                                            
+            
+                                           
+                                            // connecting database
+            
+                                            $servername = "localhost";
+                                            $username = "root";
+                                            $password = "";
+                                            $dbName = "user";
                             
-                            // echo $radioVal;
-                        } else {
-                            echo "Please select a gender.";
-                        }
-                                    // checking connection
-
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "";
-                        $dbName = "user";
-           
-                        $con = new mysqli($servername, $username, $password, $dbName);
-                        // insert data to the database
-                        $sql = "INSERT INTO userDetail(firstname, lastname, gender, email,phone_number, company, addres)
-                        VALUES ('$firstName', '$lastName', '$genderValue', '$email','$phoneNumber', '$companyName', '$address')
-                        ";
-                         if($con->connect_error){
-                            echo "Database not connect".$con->connect_error;
-                        }else{
-                            echo "Database connected successfully"."<br>";
-                        }
+                                            $con = new mysqli($servername, $username, $password, $dbName);
             
+                                            if($con->connect_error){
+                                                echo "Database not connect".$con->connect_error;
+                                            }else{
+                                                echo "Database connected successfully"."<br>";
+                                            }
+            
+                                            // insert data to the database
+                                            $sql = "INSERT INTO userDetail(firstname, lastname, gender, email,phone_number, company, addres)
+                                            VALUES ('$firstName', '$lastName', '$genderValue', '$email','$phoneNumber', '$companyName', '$address')
+                                            ";
+                                            
+                                
+            
+                                            $insert = $con->query($sql);    
+            
+            
+                                            // adding gender column to the database
+                                            // $sql = "ALTER TABLE userDetail
+                                            //     ADD COLUMN gender VARCHAR(20) NOT NULL AFTER lastname;
+                                            // ";
+            
+                                            // if($con->query($sql) === TRUE){
+                                            //     echo "Column added";
+                                            // }else{
+                                            //     "something went wrong";
+                                            // }
+                                            
+            
+                                            $fetch = "SELECT * FROM userDetail";
+                                            $result = $con->query($fetch);
+            
+                                            if ($result->num_rows > 0) {
+                                                // echo "<table>";
+                                                echo "<tr>
+                                                        <th>ID</th>
+                                                        <th>First Name</th>
+                                                        <th>Last Name</th>
+                                                        <th>Email</th>
+                                                        <th>Phone Number</th>
+                                                        <th>Gender</th>
+                                                        <th>Company</th>
+                                                        <th>Address</th>
+                                                        <th>Actions</th>
+                                                        </tr>";
+                                                while($row = $result->fetch_assoc()) {
+                                                    echo
+                                                        "<tr>
+                                                            <td>".$row['id']."</td>
+                                                            <td>". $row["firstname"] ."</td>
+                                                            <td>". $row["lastname"] ."</td>
+                                                            <td>". $row["email"] ."</td>
+                                                            <td>". $row["phone_number"] ."</td>
+                                                            <td>". $row["gender"] ."</td>
+                                                            <td>". $row["company"] ."</td>
+                                                            <td>". $row["addres"] ."</td>
+                                                            <td>
+                                                                <form action='http://localhost/Form/delete.php' method='POST' >
+                                                                    <button type='submit' name='delete-id' value='".$row['id']."'>DELETE</button>
+                                                                </form>
+                                                                <form action='http://localhost/Form/update.php' method='POST' >
+                                                                    <button type='submit' name='update-id' value='".$row['id']."'>UPDATE</button>
+                                                                </form>
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ";
+                                                }
+                                                // echo "</table>";
+                                            } else {
+                                                echo "No records found.";
+                                            }
+                                            $con->close();
+                                    }
+                   
+                               } 
+            
+                                
+                            }
+                        }
+                    }
 
-                        $insert = $con->query($sql);    
+                    if(isset($_POST['update'])){
+
+                        if($_SERVER["REQUEST_METHOD"] == "POST"){
+                            if( empty($_POST['firstName']) && 
+                                empty($_POST["lastName"]) && 
+                                empty($_POST["email"]) &&
+                                empty($_POST["phoneNumber"]) && 
+                                empty($_POST["companyName"]) && 
+                                empty($_POST["address"]))
+                                {
+            
+                                    header("Location: update.php");
+            
+                            }else{
+
+                                
+                                        
+                                            
+                                    $id = $_POST['userID'];
+                                    echo $id;
+            
+                                           
+                                            // connecting database
+            
+                                            $servername = "localhost";
+                                            $username = "root";
+                                            $password = "";
+                                            $dbName = "user";
+                            
+                                            $con = new mysqli($servername, $username, $password, $dbName);
+            
+                                            if($con->connect_error){
+                                                echo "Database not connect".$con->connect_error;
+                                            }else{
+                                                echo "Database connected successfully"."<br>";
+                                            }
+
+                                            $genderValue = $_POST["gender"];
 
 
-                        // adding gender column to the database
-                        // $sql = "ALTER TABLE userDetail
-                        //     ADD COLUMN gender VARCHAR(20) NOT NULL AFTER lastname;
-                        // ";
+                                            $firstName = $_POST['firstName'];
+                                            // echo $firstName."<br>";
+                                            
+                                            $lastName = $_POST["lastName"];
+                                            
+                                            $email = $_POST["email"];
+                                            
+                                            $phoneNumber = $_POST["phoneNumber"];
+                                            
+                                            $companyName = $_POST["companyName"];
+                                            
+                                            $address = $_POST["address"];
 
-                        // if($con->query($sql) === TRUE){
-                        //     echo "Column added";
-                        // }else{
-                        //     "something went wrong";
-                        // }
+                                            
+                                            $updateID = "UPDATE userDetail 
+                                                        SET firstname = '$firstName', 
+                                                            lastname = '$lastName',
+                                                            gender = '$genderValue',
+                                                            email = '$email',
+                                                            phone_number = '$phoneNumber',
+                                                            company = '$companyName',
+                                                            addres = '$address'
+                                                        WHERE id = $id";
+                                            
+                                            $update = $con->query($updateID);
+
+
+                                            $fetch = "SELECT * FROM userDetail";
+                                            $result = $con->query($fetch);
+
+                                            if ($result->num_rows > 0) {
+                                                // echo "<table>";
+                                                echo "<tr>
+                                                        <th>ID</th>
+                                                        <th>First Name</th>
+                                                        <th>Last Name</th>
+                                                        <th>Email</th>
+                                                        <th>Phone Number</th>
+                                                        <th>Gender</th>
+                                                        <th>Company</th>
+                                                        <th>Address</th>
+                                                        <th>Actions</th>
+                                                        </tr>";
+                                                while($row = $result->fetch_assoc()) {
+                                                    echo
+                                                        "<tr>
+                                                            <td>".$row['id']."</td>
+                                                            <td>". $row["firstname"] ."</td>
+                                                            <td>". $row["lastname"] ."</td>
+                                                            <td>". $row["email"] ."</td>
+                                                            <td>". $row["phone_number"] ."</td>
+                                                            <td>". $row["gender"] ."</td>
+                                                            <td>". $row["company"] ."</td>
+                                                            <td>". $row["addres"] ."</td>
+                                                            <td>
+                                                                <form action='http://localhost/Form/delete.php' method='POST' >
+                                                                    <button type='submit' name='delete-id' value='".$row['id']."'>DELETE</button>
+                                                                </form>
+                                                                <form action='http://localhost/Form/update.php' method='POST' >
+                                                                    <button type='submit' name='update-id' value='".$row['id']."'>UPDATE</button>
+                                                                </form>
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ";
+                                                }
+                                                // echo "</table>";
+                                            } else {
+                                                echo "No records found.";
+                                            }
+                                            $con->close();
+
+
+
+
+
+
+
+                            }
+                        }
+
+                        
                         
 
-                        $fetch = "SELECT * FROM userDetail";
-                        $result = $con->query($fetch);
 
-                        if ($result->num_rows > 0) {
-                            // echo "<table>";
-                            echo "<tr>
-                                    <th>ID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Email</th>
-                                    <th>Phone Number</th>
-                                    <th>Gender</th>
-                                    <th>Company</th>
-                                    <th>Address</th>
-                                    <th>Actions</th>
-                                    </tr>";
-                            while($row = $result->fetch_assoc()) {
-                                echo
-                                    "<tr>
-                                        <td>".$row['id']."</td>
-                                        <td>". $row["firstname"] ."</td>
-                                        <td>". $row["lastname"] ."</td>
-                                        <td>". $row["email"] ."</td>
-                                        <td>". $row["phone_number"] ."</td>
-                                        <td>". $row["gender"] ."</td>
-                                        <td>". $row["company"] ."</td>
-                                        <td>". $row["addres"] ."</td>
-                                        <td>
-                                            <form action='http://localhost/Form/delete.php' method='POST' >
-                                                <button type='submit' name='delete-id' value='".$row['id']."'>DELETE</button>
-                                            </form>
-                                            <form action='http://localhost/Form/update.php' method='POST' >
-                                                <button type='submit' name='update-id' value='".$row['id']."'>UPDATE</button>
-                                            </form>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                ";
-                            }
-                            // echo "</table>";
-                        } else {
-                            echo "No records found.";
-                        }
-                        $con->close();
-                }
-            }
+
+                    }
             ?>
                 <button id="redirectButton">Add More User</button>
                 <script>
