@@ -104,6 +104,8 @@
        
                            header("Location: index.html");
                            exit();
+                        }else{
+                            $genderValue = $_POST["gender"];
                         }
        
                    } 
@@ -123,7 +125,7 @@
                         // echo $address."<br>";
 
                         if(isset($_POST["gender"])) {
-                            $genderValue = $_POST["gender"];
+                            
                             // echo $radioVal;
                         } else {
                             echo "Please select a gender.";
@@ -192,6 +194,9 @@
                                         <td>
                                             <form action='http://localhost/Form/delete.php' method='POST' >
                                                 <button type='submit' name='delete-id' value='".$row['id']."'>DELETE</button>
+                                            </form>
+                                            <form action='http://localhost/Form/update.php' method='POST' >
+                                                <button type='submit' name='update-id' value='".$row['id']."'>UPDATE</button>
                                             </form>
                                         </td>
                                         <td></td>

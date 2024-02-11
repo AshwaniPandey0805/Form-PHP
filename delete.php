@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        <style>
         table {
             width: 100%;
             border-collapse: collapse;
@@ -68,9 +67,12 @@
     .deleteBtn:hover {
         background-color: #cc0000; /* Darker red color on hover */
     }
-    </style>
+</style>
 </head>
 <body>
+
+    <h1>User Details</h1>
+
     <table>
     <?php 
         if(isset($_POST['delete-id'])){
@@ -151,6 +153,9 @@
                                                 <form action='http://localhost/Form/delete.php' method='POST' >
                                                     <button type='submit' name='delete-id' value='".$row['id']."'>DELETE</button>
                                                 </form>
+                                                <form action='http://localhost/Form/update.php' method='POST' >
+                                                    <button type='submit' name='update-id' value='".$row['id']."'>UPDATE</button>
+                                                </form>
                                             </td>
                                             <td></td>
                                         </tr>
@@ -175,3 +180,4 @@
     </table>
 </body>
 </html>
+        
