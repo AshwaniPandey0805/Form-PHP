@@ -162,7 +162,7 @@
                         </div>
                         <!-- submit button -->
                         <div class='submitBtn'>
-                            <input type='submit' name='update' value='update'>
+                            <input type='submit' name='updateDetail' value='update'>
                         </div>
                     </form>
                     ";
