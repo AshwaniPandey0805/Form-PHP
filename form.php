@@ -203,6 +203,11 @@
                                 
                                 // connecting database
                                 $con = toConnectDataBase();
+
+                                // createDatabase($con);
+
+                                // create table
+                                // createTable($con);
                                 
                                 // insert data to the database
                                 insertDataToDataBase( $con, $firstName, $lastName, $email, $genderValue, $phoneNumber, $companyName, $address);
@@ -226,7 +231,7 @@
                 $con = toConnectDataBase();
     
                 $retriveData = " SELECT * 
-                            FROM userDetail 
+                            FROM userDetails 
                             WHERE id=$id ";
                             
                 $result = $con->query($retriveData);
@@ -241,7 +246,7 @@
                             <h1>Update User</h1>
                             <!-- first name and last name -->
                             <div class='userName'>
-                            <div class='form-control ' hidden>
+                            <div class='form-control '>
                                 <label for='userID'>User ID:</label>
                                 <input type='text' name='userID' value='".$row['id']."'  >
                             </div>
@@ -285,12 +290,12 @@
                                 <!-- company name -->
                                 <div class='form-control'>
                                     <label for='companyName'>Company(if applicable)</label>
-                                    <input type='text' name='companyName' placeholder='Compnay' value='".$row['company']."' >
+                                    <input type='text' name='companyName' placeholder='Compnay' value='".$row['company_name']."' >
                                 </div>
                                 <!-- physical address -->
                                 <div class='form-control'>
                                     <label for='address'>Physical Address</label>
-                                    <input type='text' name='address' placeholder='Physical Address' value='".$row['addres']."' >
+                                    <input type='text' name='address' placeholder='Physical Address' value='".$row['address']."' >
                                 </div>
                                 
                             </div>
@@ -368,15 +373,48 @@
                     $password = "";
                     $dbName = "user";
 
-                    $con = new mysqli($servername, $username, $password, $dbName);
+                    $con = new mysqli($servername, $username, $password , $dbName);
 
                     if($con->connect_error){
                         echo "Database not connect".$con->connect_error;
                     }else{
-                        // echo "Database connected successfully"."<br>";
+                        echo "Database connected successfully"."<br>";
                     }
 
                     return $con;
+                }
+
+                // function to create database
+                function createDatabase($con){
+                    
+                    $dbname = "CREATE DATABASE user";
+
+                    if($con->query($dbname) === TRUE){
+                        echo "Database created successfully";
+                    }else{
+                        echo "Something went wromg while creating database";
+                    }
+                }
+
+                // function to create database
+                function createTable($con){
+                    $createTable = "CREATE TABLE userDetails (
+                                    id INT AUTO_INCREMENT PRIMARY KEY,
+                                    firstname VARCHAR(50) NOT NULL,
+                                    lastname VARCHAR(50) NOT NULL,
+                                    email VARCHAR(100) NOT NULL,
+                                    phone_number VARCHAR(20),
+                                    gender ENUM('male', 'female'),
+                                    company_name VARCHAR(100),
+                                    address VARCHAR(255)
+                                    );";
+
+                    if($con->query($createTable) === TRUE){
+                        echo "table created";
+
+                    }else{
+                        echo "Something went wrong while creating database";
+                    }
                 }
 
                 // function to insert data to databse
@@ -390,7 +428,7 @@
                             $companyName,
                             $address){
 
-                    $sql = "INSERT INTO userDetail(firstname, lastname, gender, email,phone_number, company, addres)
+                    $sql = "INSERT INTO userDetails(firstname, lastname, gender, email,phone_number, company_name, address)
                             VALUES ('$firstName', '$lastName', '$genderValue', '$email','$phoneNumber', '$companyName', '$address')
                             ";
                     
@@ -404,7 +442,7 @@
 
                 // function to fetch data from the user
                 function fetchUserDetails($con){
-                    $fetch = "SELECT * FROM userDetail";
+                    $fetch = "SELECT * FROM userDetails";
                     $result = $con->query($fetch);
 
                     if ($result->num_rows > 0) {
@@ -431,17 +469,17 @@
                                     <td>". $row["email"] ."</td>
                                     <td>". $row["phone_number"] ."</td>
                                     <td>". $row["gender"] ."</td>
-                                    <td>". $row["company"] ."</td>
-                                    <td>". $row["addres"] ."</td>
+                                    <td>". $row["company_name"] ."</td>
+                                    <td>". $row["address"] ."</td>
                                     <td>
                                         <div class='actionBtn'>
                                             <div>
-                                                <form action='http://localhost/Form/form.php' method='POST' >
+                                                <form action='http://localhost/Projects/Core-PHP-Form/form.php' method='POST' >
                                                     <button type='submit' name='delete-id' value='".$row['id']."' id='deleteBtn'>DELETE</button>
                                                 </form>
                                             </div>
                                             <div>
-                                                <form action='http://localhost/Form/form.php' method='POST' >
+                                                <form action='http://localhost/Projects/Core-PHP-Form/form.php' method='POST' >
                                                     <button type='submit' name='update-id' value='".$row['id']."' id='updateBtn'>UPDATE</button>
                                                 </form>
                                             </div>
@@ -483,14 +521,14 @@
                 // function to update user details
                 function updateUserDetail($con, $firstName, $lastName, $email, $genderValue, $phoneNumber, $companyName, $address, $id){
 
-                    $updateID = "UPDATE userDetail 
+                    $updateID = "UPDATE userDetails 
                                 SET firstname = '$firstName', 
                                     lastname = '$lastName',
                                     gender = '$genderValue',
                                     email = '$email',
                                     phone_number = '$phoneNumber',
-                                    company = '$companyName',
-                                    addres = '$address'
+                                    company_name = '$companyName',
+                                    address = '$address'
                                 WHERE id = $id";
                     $con->query($updateID);
                 }
